@@ -1,0 +1,12 @@
+.DS_Store
+.build/
+DerivedData/
+DerivedDataLocal/
+SoloraStorySeed.xcodeproj/
+SoloraStorySeedLocal.xcodeproj/
+*.xcuserstate
+xcuserdata/
+*.xcworkspace/xcuserdata/
+GoogleService-Info.plist
+firebase-debug.log
+*.mp4

@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/wins/{momentId} {
+      allow read, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'id', 'title', 'caption', 'occurredAt', 'createdAt', 'updatedAt',
+          'world', 'schemaVersion', 'photoPaths'
+        ])
+        && request.resource.data.id == momentId
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.caption is string
+        && request.resource.data.caption.size() <= 2000
+        && request.resource.data.occurredAt is timestamp
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.world == 'memoryShelves'
+        && request.resource.data.schemaVersion == 1
+        && request.resource.data.photoPaths == [];
+      allow update: if request.auth != null && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'title', 'caption', 'updatedAt'
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.caption is string
+        && request.resource.data.caption.size() <= 2000
+        && request.resource.data.updatedAt == request.time;
+    }
+  }
+}
